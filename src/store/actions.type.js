@@ -1,0 +1,16 @@
+export const CHECK_AUTH = 'checkAuth'
+export const FETCH_PROFILE = 'fetchProfile'
+export const LOGIN = 'login'
+export const LOGOUT = 'logout'
+export const REGISTER = 'register'
+export const UPDATE_USER = 'updateUser'
+
+export const FETCH_USERS = 'fetchUsers'
+
+export const FETCH_PLAYLIST = 'fetchPlaylist'
+export const PUSH_PLAYLIST = 'pushPlaylist'
+export const POP_PLAYLIST = 'popPlaylist'
+export const REORDER_PLAYLIST = 'reorderPlaylist'
+export const FETCH_CURRENT_VIDEO = 'fetchCurrentVideo'
+export const FETCH_NEXT_VIDEO = 'fetchNextVideo'
+export const CLEAR_CURRENT_VIDEO = 'clearCurrentVideo'
