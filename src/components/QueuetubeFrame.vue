@@ -116,6 +116,7 @@
             },
             onSkip() {
                 this.$emit('skip')
+                this.now = 0
             },
             onPlayPause() {
                 this.paused = !this.paused;

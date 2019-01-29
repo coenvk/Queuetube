@@ -14,7 +14,8 @@ import {
     REORDER_PLAYLIST_ITEM,
     SET_CURRENT_VIDEO,
     SET_PAUSE_TIME,
-    SET_PLAYLIST
+    SET_PLAYLIST,
+    GET_NEXT_VIDEO
 } from './mutations.type'
 
 const axios = require('axios');
@@ -75,11 +76,7 @@ const actions = {
 
     },
     [FETCH_NEXT_VIDEO](context, {oldStartTime}) {
-        if (true) { // !!this.timeoutId
-            // clearTimeout(this.timeoutId);
-            context.commit(SET_CURRENT_VIDEO, {currentVideo: null});
-            _playNext(state);
-        }
+        context.commit(GET_NEXT_VIDEO, {oldStartTime: oldStartTime})
     },
     [PUSH_PLAYLIST](context, {video}) {
         context.commit(ADD_TO_PLAYLIST, {video: video});
@@ -101,9 +98,6 @@ const mutations = {
         if (state.playlist.length === 1 && !state.currentVideo) {
             _playNext(state)
         }
-        console.log('Added video: ' + state.playlist.reduce((acc, val) => {
-            return acc + val.video.snippet.title;
-        }, []))
     },
     [SET_PLAYLIST](state, {playlist}) {
         state.playlist = playlist
@@ -115,25 +109,21 @@ const mutations = {
         state.playlist.splice(index, 1)
     },
     [REORDER_PLAYLIST_ITEM](state, {oldIndex, newIndex}) {
-        console.log('Before: ' + state.playlist.reduce((acc, val) => {
-            return acc + val.video.snippet.title;
-        }, []))
         const video = state.playlist[oldIndex];
-        console.log('Moving: ' + video.video.snippet.title)
         state.playlist = state.playlist.filter(item => {
             return item.video.id.videoId !== video.video.id.videoId
         })
-        console.log('Reduced: ' + state.playlist.reduce((acc, val) => {
-            return acc + val.video.snippet.title;
-        }, []))
         state.playlist.splice(newIndex, 0, video)
-        console.log('From: ' + oldIndex + ' - To: ' + newIndex);
-        console.log('After: ' + state.playlist.reduce((acc, val) => {
-            return acc + val.video.snippet.title;
-        }, []))
     },
     [SET_PAUSE_TIME](state, {pauseTime}) {
-        state.currentVideo.pauseTime = pauseTime;
+        if (state.currentVideo) state.currentVideo.pauseTime = pauseTime;
+    },
+    [GET_NEXT_VIDEO](state, {oldStartTime}) {
+        if (true) { // !!this.timeoutId
+            // clearTimeout(this.timeoutId);
+            state.currentVideo = null;
+            _playNext(state);
+        }
     }
 }
 

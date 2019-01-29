@@ -40,52 +40,52 @@ const getters = {
 }
 
 const actions = {
-    [FETCH_PLAYLIST](context) {
-        ApiService.get(`queuetube/playlist`).then(response => {
+    [FETCH_PLAYLIST](context, {roomName}) {
+        ApiService.get(`queuetube/${roomName}/playlist`).then(response => {
             context.commit(SET_PLAYLIST, {playlist: response.data.playlist})
         }).catch(error => {
             context.commit(`error/${SET_ERROR}`, {error: error})
         })
     },
-    [FETCH_CURRENT_VIDEO](context) {
-        ApiService.get(`queuetube/currentVideo`).then(response => {
+    [FETCH_CURRENT_VIDEO](context, {roomName}) {
+        ApiService.get(`queuetube/${roomName}/currentVideo`).then(response => {
             context.commit(SET_CURRENT_VIDEO, {currentVideo: response.data.currentVideo})
         }).catch(error => {
             context.commit(`error/${SET_ERROR}`, {error: error})
         })
     },
-    [FETCH_NEXT_VIDEO](context, {oldStartTime}) {
-        ApiService.get(`queuetube/nextVideo/${oldStartTime}`).then(response => {
-            context.commit(SET_PLAYLIST, {playlist: response.data.playlist})
-            context.commit(SET_CURRENT_VIDEO, {currentVideo: response.data.currentVideo})
-        }).catch(error => {
-            context.commit(`error/${SET_ERROR}`, {error: error})
-        })
-    },
-    [PUSH_PLAYLIST](context, {video}) {
-        ApiService.put(`queuetube/playlist`, {video: video}).then(response => {
+    [FETCH_NEXT_VIDEO](context, {roomName, oldStartTime}) {
+        ApiService.get(`queuetube/${roomName}/nextVideo/${oldStartTime}`).then(response => {
             context.commit(SET_PLAYLIST, {playlist: response.data.playlist})
             context.commit(SET_CURRENT_VIDEO, {currentVideo: response.data.currentVideo})
         }).catch(error => {
             context.commit(`error/${SET_ERROR}`, {error: error})
         })
     },
-    [POP_PLAYLIST](context, {index}) {
-        ApiService.delete(`queuetube/playlist/${index}`).then(response => {
+    [PUSH_PLAYLIST](context, {roomName, video}) {
+        ApiService.put(`queuetube/${roomName}/playlist`, {video: video}).then(response => {
+            context.commit(SET_PLAYLIST, {playlist: response.data.playlist})
+            context.commit(SET_CURRENT_VIDEO, {currentVideo: response.data.currentVideo})
+        }).catch(error => {
+            context.commit(`error/${SET_ERROR}`, {error: error})
+        })
+    },
+    [POP_PLAYLIST](context, {roomName, index}) {
+        ApiService.delete(`queuetube/${roomName}/playlist/${index}`).then(response => {
             context.commit(SET_PLAYLIST, {playlist: response.data.playlist})
         }).catch(error => {
             context.commit(`error/${SET_ERROR}`, {error: error})
         })
     },
-    [REORDER_PLAYLIST](context, {oldIndex, newIndex}) {
-        ApiService.put(`queuetube/playlist/${oldIndex}`, {newIndex: newIndex}).then(response => {
+    [REORDER_PLAYLIST](context, {roomName, oldIndex, newIndex}) {
+        ApiService.put(`queuetube/${roomName}/playlist/${oldIndex}`, {newIndex: newIndex}).then(response => {
             context.commit(SET_PLAYLIST, {playlist: response.data.playlist})
         }).catch(error => {
             context.commit(`error/${SET_ERROR}`, {error: error})
         })
     },
-    [CLEAR_CURRENT_VIDEO](context) {
-        ApiService.delete(`queuetube/currentVideo`).then(response => {
+    [CLEAR_CURRENT_VIDEO](context, {roomName}) {
+        ApiService.delete(`queuetube/${roomName}/currentVideo`).then(response => {
             context.commit(SET_CURRENT_VIDEO, {currentVideo: response.data.currentVideo})
         }).catch(error => {
             context.commit(`error/${SET_ERROR}`, {error: error})
@@ -103,7 +103,7 @@ const actions = {
 
 const mutations = {
     [ADD_TO_PLAYLIST](state, {video}) {
-        state.playlist.push(video)
+        state.playlist.push({video: video})
     },
     [SET_PLAYLIST](state, {playlist}) {
         state.playlist = playlist

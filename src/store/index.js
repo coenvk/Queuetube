@@ -11,7 +11,7 @@ Vue.use(Vuex)
 const vuexLocal = new VuexPersistence({
     key: 'queuetube',
     storage: window.localStorage,
-    reducer: state => ({local: state.local})
+    reducer: state => ({local: state.local, remote: state.remote})
 })
 
 export default new Vuex.Store({

@@ -39,6 +39,18 @@
             No server online!
         </p>
 
+        <div v-else-if="error" class="text-danger">
+            <b>You are either</b>
+            <ul>
+                <li>
+                    Trying to join a room that doesn't exist
+                </li>
+                <li>
+                    Or trying to host an existing room
+                </li>
+            </ul>
+        </div>
+
         <b-row>
             <b-col sm="8" offset-sm="2" md="6" offset-md="3" lg="4" offset-lg="4">
                 <b-button variant="primary" class="my-2" @click.prevent="toLocal">
