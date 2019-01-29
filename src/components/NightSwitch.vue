@@ -1,7 +1,7 @@
 <template>
     <div class="switch">
-        <input id="switchOption" name="switchOption" type="checkbox" @click="toggleNightMode"/>
-        <label for="switchOption" class="label-primary"></label>
+        <input id="nightSwitchOption" name="nightSwitchOption" type="checkbox" @click="toggleNightMode"/>
+        <label for="nightSwitchOption" class="label-primary"></label>
     </div>
 </template>
 
@@ -75,7 +75,7 @@
                     themeHelper.theme = 'flatly'
                 }
             }
-        }
+        },
     }
 </script>
 

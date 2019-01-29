@@ -21,7 +21,7 @@
         </b-row>
 
         <b-row>
-            <b-col class="mb-4">
+            <b-col xs="12" sm="8" md="6" lg="6" class="mb-4">
 
                 <queuetube-frame v-if="selectedVideo" :video="selectedVideo" :startTime="startTime"
                                  :duration="currentVideo.duration" @ended="playNext" @skip="playNext"></queuetube-frame>
@@ -47,6 +47,8 @@
 
             <b-col class="my-4">
 
+                <autoplay-switch @toggle="autoplay = !autoplay"/>
+
                 <b-card class="mt-2 ml-0" v-for="(result, index) in searchResults" :key="index" :value="result"
                         @click.prevent="selectVideo(result)">
                     <b-media right-align>
@@ -62,6 +64,7 @@
 </template>
 
 <script>
+    import AutoplaySwitch from '@/components/AutoplaySwitch'
     import Draggable from 'vuedraggable'
     import YouTubeSearch from 'youtube-api-search'
     import QueuetubeFrame from '@/components/QueuetubeFrame'
@@ -71,8 +74,7 @@
         FETCH_NEXT_VIDEO,
         FETCH_PLAYLIST,
         POP_PLAYLIST,
-        PUSH_PLAYLIST,
-        REORDER_PLAYLIST
+        PUSH_PLAYLIST
     } from '@/store/actions.type'
     import {mapState} from 'vuex'
     import {SET_PLAYLIST} from '@/store/mutations.type'
@@ -82,12 +84,14 @@
         data() {
             return {
                 searchResults: [],
-                query: null
+                query: null,
+                autoplay: false,
             }
         },
         components: {
             QueuetubeFrame,
-            Draggable
+            Draggable,
+            AutoplaySwitch
         },
         computed: {
             ...mapState({
@@ -139,6 +143,8 @@
                         let oldStartTime = null
                         if (curVid) oldStartTime = curVid.startTime
                         this.$store.dispatch(`local/${FETCH_NEXT_VIDEO}`, {oldStartTime: oldStartTime})
+                    } else if (this.autoplay) {
+                        this.autoplayRelated(curVid.video);
                     }
                 })
             },
@@ -147,7 +153,24 @@
             },
             onSort(evt) {
                 // this.$store.dispatch(`local/${REORDER_PLAYLIST}`, {oldIndex: evt.oldIndex, newIndex: evt.newIndex})
-            }
+            },
+            autoplayRelated(video) {
+                const limit = 5;
+                YouTubeSearch({
+                    key: process.env.VUE_APP_BROWSER_YOUTUBE_API_KEY,
+                    relatedToVideoId: video.id.videoId,
+                    limit: limit,
+                }, results => {
+                    let nextVid = null;
+                    for (let i = limit - 1; i >= 0; i--) {
+                        nextVid = results[i];
+                        if (!!nextVid) {
+                            break;
+                        }
+                    }
+                    this.$store.dispatch(`local/${PUSH_PLAYLIST}`, {video: nextVid})
+                });
+            },
         }
     }
 </script>

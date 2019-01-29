@@ -4,7 +4,10 @@
         <b-navbar-brand :to="{name: 'home' }">Queuetube</b-navbar-brand>
         <b-collapse is-nav id="nav-collapse">
             <b-navbar-nav class="ml-auto">
-                <b-nav-text right>
+                <b-nav-text>
+                    Night Mode
+                </b-nav-text>
+                <b-nav-text right class="mx-3">
                     <night-switch/>
                 </b-nav-text>
             </b-navbar-nav>

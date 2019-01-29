@@ -31,6 +31,7 @@
 
 <script>
     import getArtistTitle from 'get-artist-title'
+    import YouTubeSearch from 'youtube-api-search'
     import {mapState} from 'vuex'
     import {SET_PAUSE_TIME} from "@/store/mutations.type";
 
@@ -43,7 +44,8 @@
                     autoplay: 1,
                     disablekb: 1,
                     controls: 0,
-                    enablejsapi: 1
+                    enablejsapi: 1,
+                    modestbranding: 1,
                 },
                 now: 0,
                 intervalId: null,
@@ -130,7 +132,7 @@
             savePause(pauseTime) {
                 if (!pauseTime) pauseTime = this.now
                 this.$store.commit(`local/${SET_PAUSE_TIME}`, {pauseTime: pauseTime})
-            }
+            },
         }
     }
 </script>
