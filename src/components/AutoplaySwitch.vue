@@ -1,12 +1,10 @@
 <template>
     <b-row class="mx-1">
-        <b-col>
-            <h5>Autoplay</h5>
-            <div class="switch mx-3">
-                <input id="autoSwitchOption" name="autoSwitchOption" type="checkbox" @click="toggleAutoplay"/>
-                <label for="autoSwitchOption" class="label-primary"></label>
-            </div>
-        </b-col>
+        <h5>Autoplay</h5>
+        <div class="switch mx-3">
+            <input id="autoSwitchOption" name="autoSwitchOption" type="checkbox" @click="toggleAutoplay"/>
+            <label for="autoSwitchOption" class="label-primary"></label>
+        </div>
     </b-row>
 </template>
 
