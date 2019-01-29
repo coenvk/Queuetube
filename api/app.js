@@ -1,7 +1,7 @@
 "use strict"
 const express = require('express');
 const bodyParser = require('body-parser');
-const Yt = require('./youtube');
+const Yt = require('./queuetube.remote');
 
 const yt = new Yt();
 const app = express();
@@ -23,64 +23,82 @@ const allowCrossDomain = function (req, res, next) {
 
 app.use(allowCrossDomain)
 
-router.get('/youtube/playlist', (req, res) => {
+router.get('/queuetube', (req, res) => {
+    console.log('[api.ROOM]: ' + JSON.stringify(req.body))
+    yt.getRooms().then(({rooms}) => {
+        return res.status(200).send({rooms: rooms})
+    }).catch(error => {
+        return res.status(500).send({error: '[api.ROOM~ERROR]: ' + error})
+    })
+})
+
+router.put('/queuetube', (req, res) => {
+    console.log('[api.ROOM]: ' + JSON.stringify(req.body))
+    yt.addRoom(req.body.roomName, req.body.hosting).then(({queuetube}) => {
+        return res.sendStatus(200);
+    }).catch(error => {
+        return res.status(500).send({error: '[api.ROOM~ERROR]: ' + error})
+    })
+})
+
+router.get('/queuetube/playlist', (req, res) => {
   console.log('[api.PLAYLIST]: ' + JSON.stringify(req.body))
-  yt.getPlaylist().then(({youtube}) => {
-    return res.status(200).send({playlist: youtube.playlist});
+  yt.getPlaylist().then(({queuetube}) => {
+    return res.status(200).send({playlist: queuetube.playlist});
   }).catch(error => {
     return res.status(500).send({error: '[api.PLAYLIST~ERROR]: ' + error})
   })
 })
 
-router.put('/youtube/playlist', (req, res) => {
+router.put('/queuetube/playlist', (req, res) => {
   console.log('[api.PLAYLIST]: ' + JSON.stringify(req.body))
-  yt.addVideo(req.body.video).then(({youtube}) => {
-    return res.status(200).send({playlist: youtube.playlist, currentVideo: youtube.currentVideo});
+  yt.addVideo(req.body.video).then(({queuetube}) => {
+    return res.status(200).send({playlist: queuetube.playlist, currentVideo: queuetube.currentVideo});
   }).catch(error => {
     return res.status(500).send({error: '[api.PLAYLIST~ERROR]: ' + error})
   })
 })
 
-router.delete('/youtube/playlist/:index', (req, res) => {
+router.delete('/queuetube/playlist/:index', (req, res) => {
   console.log('[api.PLAYLIST]: ' + JSON.stringify(req.body))
-  yt.removeVideo(req.params.index).then(({youtube}) => {
-    return res.status(200).send({playlist: youtube.playlist});
+  yt.removeVideo(req.params.index).then(({queuetube}) => {
+    return res.status(200).send({playlist: queuetube.playlist});
   }).catch(error => {
     return res.status(500).send({error: '[api.PLAYLIST~ERROR]: ' + error})
   })
 })
 
-router.put('/youtube/playlist/:oldIndex', (req, res) => {
+router.put('/queuetube/playlist/:oldIndex', (req, res) => {
   console.log('[api.PLAYLIST]: ' + JSON.stringify(req.body))
-  yt.reorderVideo(req.params.oldIndex, req.body.newIndex).then(({youtube}) => {
-    return res.status(200).send({playlist: youtube.playlist});
+  yt.reorderVideo(req.params.oldIndex, req.body.newIndex).then(({queuetube}) => {
+    return res.status(200).send({playlist: queuetube.playlist});
   }).catch(error => {
     return res.status(500).send({error: '[api.PLAYLIST~ERROR]: ' + error})
   })
 })
 
-router.get('/youtube/currentVideo', (req, res) => {
+router.get('/queuetube/currentVideo', (req, res) => {
   console.log('[api.CURRENTVIDEO]: ' + JSON.stringify(req.body))
-  yt.getCurrentVideo().then(({youtube}) => {
-    return res.status(200).send({currentVideo: youtube.currentVideo});
+  yt.getCurrentVideo().then(({queuetube}) => {
+    return res.status(200).send({currentVideo: queuetube.currentVideo});
   }).catch(error => {
     return res.status(500).send({error: '[api.CURRENTVIDEO~ERROR]: ' + error})
   })
 })
 
-router.get('/youtube/nextVideo/:oldStartTime', (req, res) => {
+router.get('/queuetube/nextVideo/:oldStartTime', (req, res) => {
   console.log('[api.NEXTVIDEO]: ' + JSON.stringify(req.body))
-  yt.getNextVideo(req.params.oldStartTime).then(({youtube}) => {
-    return res.status(200).send({playlist: youtube.playlist, currentVideo: youtube.currentVideo});
+  yt.getNextVideo(req.params.oldStartTime).then(({queuetube}) => {
+    return res.status(200).send({playlist: queuetube.playlist, currentVideo: queuetube.currentVideo});
   }).catch(error => {
     return res.status(500).send({error: '[api.NEXTVIDEO~ERROR]: ' + error})
   })
 })
 
-router.delete(`/youtube/currentVideo`, (req, res) => {
+router.delete(`/queuetube/currentVideo`, (req, res) => {
   console.log('[api.CURRENTVIDEO]: ' + JSON.stringify(req.body))
-  yt.clearCurrentVideo().then(({youtube}) => {
-    return res.status(200).send({playlist: youtube.playlist, currentVideo: youtube.currentVideo});
+  yt.clearCurrentVideo().then(({queuetube}) => {
+    return res.status(200).send({playlist: queuetube.playlist, currentVideo: queuetube.currentVideo});
   }).catch(error => {
     return res.status(500).send({error: '[api.CURRENTVIDEO~ERROR]: ' + error})
   })

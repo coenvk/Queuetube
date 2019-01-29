@@ -74,7 +74,7 @@ import {mapGetters} from 'vuex'
 import {SET_PLAYLIST} from '@/store/mutations.type'
 
 export default {
-  name: 'QueuetubePage',
+  name: 'RemotePage',
   data () {
     return {
       searchResults: [],
@@ -86,10 +86,10 @@ export default {
     Draggable
   },
   computed: {
-    ...mapGetters(['currentVideo']),
+    ...mapGetters(['currentVideo', 'roomName']),
     playlist: {
       get () {
-        return this.$store.state.youtube.playlist
+        return this.$store.state.remote.playlist
       },
       set (val) {
         this.$store.commit(SET_PLAYLIST, {playlist: val})
@@ -110,8 +110,8 @@ export default {
   methods: {
     fetchPlaylist () {
       Promise.all([
-        this.$store.dispatch(FETCH_PLAYLIST),
-        this.$store.dispatch(FETCH_CURRENT_VIDEO)
+        this.$store.dispatch(FETCH_PLAYLIST, {roomName: this.roomName}),
+        this.$store.dispatch(FETCH_CURRENT_VIDEO, {roomName: this.roomName})
       ])
     },
     searchRequest () {
@@ -120,23 +120,23 @@ export default {
       })
     },
     selectVideo (video) {
-      this.$store.dispatch(PUSH_PLAYLIST, {video: video})
+      this.$store.dispatch(PUSH_PLAYLIST, {roomName: this.roomName, video: video})
     },
     playNext () {
       const curVid = this.currentVideo
-      this.$store.dispatch(CLEAR_CURRENT_VIDEO).then(() => {
+      this.$store.dispatch(CLEAR_CURRENT_VIDEO, {roomName: this.roomName}).then(() => {
         if (this.playlist.length > 0) {
           let oldStartTime = null
           if (curVid) oldStartTime = curVid.startTime
-          this.$store.dispatch(FETCH_NEXT_VIDEO, {oldStartTime: oldStartTime})
+          this.$store.dispatch(FETCH_NEXT_VIDEO, {roomName: this.roomName, oldStartTime: oldStartTime})
         }
       })
     },
     removeVideo (index) {
-      this.$store.dispatch(POP_PLAYLIST, {index: index})
+      this.$store.dispatch(POP_PLAYLIST, {roomName: this.roomName, index: index})
     },
     onSort (evt) {
-      this.$store.dispatch(REORDER_PLAYLIST, {oldIndex: evt.oldIndex, newIndex: evt.newIndex})
+      this.$store.dispatch(REORDER_PLAYLIST, {roomName: this.roomName, oldIndex: evt.oldIndex, newIndex: evt.newIndex})
     }
   }
 }
