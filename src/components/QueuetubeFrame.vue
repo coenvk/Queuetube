@@ -34,6 +34,7 @@
     import YouTubeSearch from 'youtube-api-search'
     import {mapState} from 'vuex'
     import {SET_PAUSE_TIME} from "@/store/mutations.type";
+    import {CLEAR_CURRENT_VIDEO} from "@/store/actions.type";
 
     export default {
         name: 'QueuetubeFrame',
@@ -114,7 +115,7 @@
                 window.document.title = this.windowTitle
             },
             onPlayerError(event) {
-
+                this.$store.dispatch(`local/${CLEAR_CURRENT_VIDEO}`);
             },
             onSkip() {
                 this.$emit('skip')
