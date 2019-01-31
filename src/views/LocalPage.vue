@@ -123,6 +123,9 @@
                     this.$store.dispatch(`local/${FETCH_PLAYLIST}`),
                     this.$store.dispatch(`local/${FETCH_CURRENT_VIDEO}`)
                 ])
+                if (!this.currentVideo && this.playlist.length > 0) {
+                    this.playNext();
+                }
             },
             searchRequest() {
                 YouTubeSearch({
