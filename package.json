@@ -9,7 +9,7 @@
     "server": "node api/app.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "body-parser": "^1.18.3",
     "bootstrap-vue": "^2.0.0-rc.11",
     "connect-history-api-fallback": "^1.6.0",
